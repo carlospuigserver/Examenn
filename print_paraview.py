@@ -10,8 +10,7 @@ def print_paraview_micro_stra_stre_disp(v_tetra, stra, stre, disp, lablet, lab):
     b = str(lab)
     c = '.vtu'
     nam = lablet + b + c
-
-    # v_tetra should be a vector, defined previously
+    
     with open(nam, 'w') as f:
         f.write('<?xml version="1.0"?> \n')
         f.write('<VTKFile type="UnstructuredGrid"> \n')
@@ -71,40 +70,29 @@ def print_paraview_micro_stra_stre_disp(v_tetra, stra, stre, disp, lablet, lab):
         f.write('          </Cells>  \n')
         f.write('          <PointData>  \n')
 
+        # Writing Strains
         f.write('             <DataArray type="Float64" NumberOfComponents="3" Name="Strains" format="ascii">   \n')
         dim_stra = int(len(stra) / 3)
         for i in range(0, dim_stra, 1):
-            for j in range(0, 4, 1):
-                f.write(str(stra[i * 3 + 0]))
-                f.write('   ')
-                f.write(str(stra[i * 3 + 1]))
-                f.write('   ')
-                f.write(str(stra[i * 3 + 2]))
-                f.write('\n')
+            f.write(' '.join(map(str, stra[i * 3: (i + 1) * 3])))
+            f.write('\n')
 
         f.write('              </DataArray>   \n')
 
+        # Writing Stresses
         f.write('             <DataArray type="Float64" NumberOfComponents="3" Name="Stress" format="ascii">   \n')
-        dim_stra = int(len(stra) / 3)
-        for i in range(0, dim_stra, 1):
-            for j in range(0, 4, 1):
-                f.write(str(stre[i * 3 + 0]))
-                f.write('   ')
-                f.write(str(stre[i * 3 + 1]))
-                f.write('   ')
-                f.write(str(stre[i * 3 + 2]))
-                f.write('\n')
+        dim_stre = int(len(stre) / 3)
+        for i in range(0, dim_stre, 1):
+            f.write(' '.join(map(str, stre[i * 3: (i + 1) * 3])))
+            f.write('\n')
 
         f.write('              </DataArray>   \n')
 
+        # Writing Displacements
         f.write('             <DataArray type="Float64" NumberOfComponents="3" Name="Displacements" format="ascii">   \n')
         dim_disp = int(len(disp) / 3)
         for i in range(0, dim_disp, 1):
-            f.write(str(disp[i * 3 + 0]))
-            f.write('   ')
-            f.write(str(disp[i * 3 + 1]))
-            f.write('   ')
-            f.write(str(disp[i * 3 + 2]))
+            f.write(' '.join(map(str, disp[i * 3: (i + 1) * 3])))
             f.write('\n')
 
         f.write('              </DataArray>   \n')
@@ -114,11 +102,4 @@ def print_paraview_micro_stra_stre_disp(v_tetra, stra, stre, disp, lablet, lab):
         f.write('   </UnstructuredGrid> \n')
         f.write('</VTKFile> \n')
 
-v_tetra = [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]  # Example vertices vector
-stra = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]  # Example strains vector
-stre = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]  # Example stresses vector
-disp = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06]  # Example displacements vector
-lablet = "output_"  # Example label for the output file
-lab = "1"  # Example additional label for the output file
-
-print_paraview_micro_stra_stre_disp(v_tetra, stra, stre, disp, lablet, lab)
+    return
